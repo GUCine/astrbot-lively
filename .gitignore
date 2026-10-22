@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.bak-*
+*.orig
+.DS_Store
+# 字体授权不明，不随仓库发布（见 README「字体和图片」）
+astrbot_plugin_lively_bond/card_assets/*.woff2
+astrbot_plugin_lively_bond/card_assets/*.ttf
+astrbot_plugin_lively_bond/card_assets/*.ttc
+astrbot_plugin_lively_panel/static/font/
+# 桌宠动画、表情包是第三方素材，不随仓库发布（见 README「字体和图片」）
+astrbot_plugin_lively_panel/static/pet/
+astrbot_plugin_lively_panel/static/meme/

@@ -1,0 +1,30 @@
+{
+  "title": {
+    "description": "面板標題",
+    "type": "string",
+    "hint": "可以用〈名字〉代表機器人的名字。留空 = 〈名字〉的小帳本",
+    "default": ""
+  },
+  "allowed_emails": {
+    "description": "允許登入面板的郵箱",
+    "type": "list",
+    "hint": "面板經 Cloudflare Access 登入，這裡核對 Cf-Access-Authenticated-User-Email。本機和宿主機訪問不受限制",
+    "default": []
+  },
+  "host": {
+    "description": "監聽地址",
+    "type": "string",
+    "hint": "docker 裡一般用 0.0.0.0（只在 docker 內網，不映射到宿主機端口）",
+    "default": "0.0.0.0"
+  },
+  "port": {
+    "description": "監聽端口",
+    "type": "int",
+    "default": 6200
+  },
+  "owner_qq": {
+    "description": "主人 QQ（留空用門禁插件裡填的）",
+    "type": "list",
+    "default": []
+  }
+}

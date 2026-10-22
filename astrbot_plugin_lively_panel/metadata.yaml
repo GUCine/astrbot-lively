@@ -1,0 +1,15 @@
+name: astrbot_plugin_lively_panel
+display_name: 網頁控制面板
+desc: 網頁控制面板：狀態、關係圖、印象卡冊、開關、待審核、飯錢、日誌（建議經 Cloudflare Tunnel + Access 訪問）
+short_desc: 網頁控制面板：狀態、關係圖、印象卡冊、開關、待審核、日誌
+version: 2.0.0
+author: GUCine
+repo: https://github.com/GUCine/astrbot_plugin_lively_panel
+support_platforms:
+  - aiocqhttp
+astrbot_version: ">=4.29.0"
+category: 工具
+tags:
+  - 面板
+  - WebUI
+  - lively
