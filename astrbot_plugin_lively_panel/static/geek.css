@@ -1,0 +1,386 @@
+/* 极客模式：html.geek 时整页换成黑底终端风（geek.js 切换）。主色 --g：蓝 #4d6bfe（DeepSeek 蓝）或绿 #00ff41
+   风格：极简、像终端；功能框是半透明的终端窗口，浮在中间的大肥鱼上面（深影子＋一圈主色细框）；底下的脑区菜单留女神异闻录那种斜切 */
+html{--g:#4d6bfe;--g-hi:#e3e9ff;--g-rgb:77,107,254;--mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,"PingFang SC","Microsoft YaHei",monospace}
+html[data-gc="green"]{--g:#00ff41;--g-hi:#eaffef;--g-rgb:0,255,65}
+
+/* 右上角的开关：平时跟别的小药丸一样，打开后变成主色 */
+.geek-btn{cursor:pointer;gap:6px}
+.geek-btn code{font:700 12px/1 var(--mono);letter-spacing:-.04em}
+.geek-btn span{font:600 12.5px/1 var(--mono)}
+.pill.geek-pal{display:none;width:32px;padding:0;justify-content:center;cursor:pointer}  /* 要比 .pill 的 inline-flex 优先，纸面时才藏得住 */
+.geek-pal i{width:12px;height:12px;border-radius:2px;background:#00ff41;box-shadow:0 0 8px #00ff41}
+html[data-gc="green"] .geek-pal i{background:#4d6bfe;box-shadow:0 0 8px #4d6bfe}
+/* 手机上顶栏放不下：开关只留 </> */
+@media (max-width:520px){.geek-btn span{display:none}.hud{gap:6px}html.geek .pill{padding:0 9px}html.geek .pill.geek-pal{width:30px;padding:0}html.geek #online > span:not(.dot){display:none}}
+#geek,.geek-scan,.geek-mark{display:none}
+.geek-flood{position:fixed;inset:0;width:100%;height:100%;z-index:95;pointer-events:none}
+
+html.geek{
+  --bg:#020409; --win:rgba(4,8,18,.8); --win-solid:#060b17;
+  --ink:#d5ddf5; --soft:#8e9bc4; --faint:#5e6a92; --hair:var(--g); --tip:rgba(var(--g-rgb),.4); --blush:#ff4f7e;
+  --paper:var(--win); --field:rgba(var(--g-rgb),.06); --rule:rgba(var(--g-rgb),.28); --line:rgba(var(--g-rgb),.12); --edge:rgba(var(--g-rgb),.3);
+  --brand-soft:rgba(var(--g-rgb),.1); --blush-soft:rgba(255,79,126,.12);
+  --tape-a:transparent; --tape-b:transparent;
+  --good:#3ddc97; --warn:#ffb547; --bad:#ff5c7a; --good-soft:rgba(61,220,151,.12); --warn-soft:rgba(255,181,71,.12); --bad-soft:rgba(255,92,122,.12);
+  --r-lg:2px; --r-md:2px; --r-sm:1px;
+  /* 浮起来：一圈主色细框、底下一大片深影子、再透一点主色的光 */
+  --float:0 0 0 1px rgba(var(--g-rgb),.34),0 22px 38px -14px rgba(0,0,0,.95),0 8px 30px -10px rgba(var(--g-rgb),.28);
+  --float-up:0 0 0 1px rgba(var(--g-rgb),.6),0 30px 44px -14px rgba(0,0,0,1),0 10px 38px -8px rgba(var(--g-rgb),.42);
+  --sh-card:var(--float); --sh-pop:var(--float);
+  --glass:rgba(4,8,18,.8); --glass-line:rgba(var(--g-rgb),.34);
+  --body:var(--mono); --hand:var(--mono);
+  color-scheme:dark;
+}
+html.geek body{background:var(--bg);color:var(--ink);font-size:13px}
+html.geek ::selection{background:var(--g);color:var(--bg)}
+html.geek #water,html.geek #fizz{visibility:hidden}
+html.geek #geek{display:block;position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+/* 扫描线和四角压暗 */
+html.geek .geek-scan{display:block;position:fixed;inset:0;z-index:45;pointer-events:none;
+  background:repeating-linear-gradient(rgba(0,0,0,.2) 0 1px,transparent 1px 3px),radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(0,0,0,.55));opacity:.45}
+@keyframes gk-blink{50%{opacity:0}}
+
+/* ---------- 顶栏 ---------- */
+html.geek .brand{font:700 18px/1 var(--mono);letter-spacing:.02em;text-shadow:0 0 14px rgba(var(--g-rgb),.55)}
+/* 标志：深色圆角小屏，代码雨只下在探头的她身上（geek.js 用 icon-geek.png 剪） */
+html.geek .brand-mark{width:48px;height:48px;border-radius:11px;overflow:hidden;background:#060a16;filter:none;
+  box-shadow:0 0 0 1.5px rgba(var(--g-rgb),.85),0 0 14px rgba(var(--g-rgb),.45)}
+html.geek .geek-mark{display:block;width:100%;height:100%}
+html.geek .brand small{font:11.5px/1.4 var(--mono);color:var(--soft);opacity:1;letter-spacing:0}
+html.geek .brand small::before{content:"$ ";color:var(--g)}
+html.geek .pill{height:30px;padding:0 12px;border-radius:1px;background:var(--win);border:0;box-shadow:var(--float);color:var(--ink);backdrop-filter:none;-webkit-backdrop-filter:none;font:12px var(--mono)}
+html.geek .pill b{font:700 14px/1 var(--mono);color:var(--g-hi)}
+html.geek .pill .dot{width:7px;height:7px;border-radius:0;background:var(--good);box-shadow:0 0 8px var(--good)}
+html.geek .pill.off .dot{background:var(--bad);box-shadow:0 0 8px var(--bad)}
+html.geek .pill.off{color:var(--bad)}
+html.geek .geek-btn{background:var(--g);color:var(--bg);box-shadow:0 0 18px rgba(var(--g-rgb),.55)}
+html.geek .pill.geek-pal{display:inline-flex}
+
+/* ---------- 脑区抬头：像终端里的一行提示符，后面一个闪着的方块光标 ---------- */
+html.geek .kpi-name b{color:var(--g-hi);font:700 22px/1.15 var(--mono);letter-spacing:.03em;text-shadow:0 0 16px rgba(var(--g-rgb),.55)}
+html.geek .kpi-name b::before{content:"~/";color:var(--g);font-weight:400;margin-right:2px}
+html.geek .kpi-name b::after{content:"";display:inline-block;width:.5em;height:.9em;margin-left:6px;vertical-align:-.1em;background:var(--g);box-shadow:0 0 10px var(--g);animation:gk-blink 1.06s steps(1) infinite}
+html.geek .kpi-name small{font:11.5px/1.5 var(--mono);color:var(--soft);text-shadow:none;opacity:1;margin-top:5px}
+html.geek .kpi-name small::before{content:"# ";color:var(--faint)}
+html.geek .kpi{padding:6px 12px 5px;border:0;border-radius:1px;background:var(--win);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:var(--float);text-shadow:none}
+html.geek .kpi small{font:11px var(--mono);color:var(--faint);opacity:1}
+html.geek .kpi b{font:700 18px/1.25 var(--mono);color:var(--g-hi)}
+html.geek .kpi b i{font:11px var(--mono);color:var(--soft);opacity:1}
+html.geek .kpi.warn{box-shadow:0 0 0 1px rgba(255,181,71,.55),0 22px 38px -14px #000}html.geek .kpi.warn b{color:var(--warn)}
+html.geek .kpi.bad{box-shadow:0 0 0 1px rgba(255,92,122,.6),0 22px 38px -14px #000}html.geek .kpi.bad b{color:var(--bad)}
+
+/* ---------- 正中间：桌宠藏起来（剪影就是她），思考泡泡变成一行终端输出 ---------- */
+html.geek #pet canvas{opacity:0!important}
+html.geek #thought{background:var(--win);color:var(--g-hi);border:0;border-radius:1px;font:12.5px/1.6 var(--mono);text-align:left;box-shadow:var(--float);padding:8px 14px 9px 30px}
+html.geek #thought::before{content:">";left:13px;top:8px;bottom:auto;width:auto;height:auto;background:none;border-radius:0;color:var(--g);font-weight:700}
+html.geek #thought::after{display:none}
+html.geek #thought .caret{width:.5em;background:var(--g)}
+html.geek #thought small{color:var(--faint)}
+html.geek #thought small::before{content:"-- "}
+@media (min-width:1101px){
+  html.geek #thought{top:auto;bottom:118px;transform:translateX(-50%)}
+}
+
+/* ---------- 两侧：每张纸变成一个终端窗口，浮在她上面 ---------- */
+/* 栏位左右多留点地方给影子（栏位会裁掉溢出去的部分），纸的位置不变 */
+@media (min-width:1101px){
+  html.geek .col{width:calc(var(--col) + 28px);padding-left:22px;padding-right:22px;gap:18px}
+  html.geek #left{left:calc(var(--side) - 22px)}html.geek #right{right:calc(var(--side) - 22px)}
+}
+html.geek .col{counter-reset:gk}
+html.geek .card{counter-increment:gk;background:var(--win);border-radius:1px;box-shadow:var(--float);transition:box-shadow .25s,transform .25s cubic-bezier(.2,.8,.2,1)}
+html.geek .card:hover{box-shadow:var(--float-up);transform:translateY(-2px)}
+html.geek .card .tp{display:none}
+/* 窗口标题栏：编号＋标题，右边是数字；说明当成注释 */
+html.geek .card-h{align-items:center;gap:10px;padding:8px 14px 7px;border-bottom:1px solid var(--line);background:linear-gradient(rgba(var(--g-rgb),.09),rgba(var(--g-rgb),.03))}
+html.geek .card-ic{display:none}
+html.geek .card h2{font:700 13px/1.35 var(--mono);letter-spacing:.02em;color:var(--g-hi);margin:0}
+html.geek .card h2::before{content:counter(gk,decimal-leading-zero) " ";color:var(--g);font-weight:400}
+html.geek .card-t p{font:11px/1.45 var(--mono);color:var(--faint);margin-top:1px}
+html.geek .card-t p::before{content:"# "}
+html.geek .card-m{padding-top:0;font:11.5px var(--mono);color:var(--faint)}
+html.geek .card-m b{font:700 14px/1 var(--mono);color:var(--g)}
+html.geek .card-b{padding:12px 14px 14px}
+html.geek .card-f{padding:9px 14px 10px;background:rgba(var(--g-rgb),.03);border-top:1px dashed var(--line);border-radius:0}
+html.geek .card.alarm{box-shadow:0 0 0 1px var(--bad),0 22px 38px -14px #000,0 8px 30px -10px rgba(255,92,122,.4)}
+html.geek .card.alarm .card-h{background:linear-gradient(rgba(255,92,122,.14),rgba(255,92,122,.04));border-bottom-color:rgba(255,92,122,.3)}
+html.geek .card.alarm h2,html.geek .card.alarm h2::before{color:var(--bad)}
+html.geek .col:hover{scrollbar-color:rgba(var(--g-rgb),.5) transparent}
+html.geek .col:hover::-webkit-scrollbar-thumb{border-radius:0;background:rgba(var(--g-rgb),.5)}
+
+/* 分页：底下一道线，选中的那页亮起来 */
+html.geek .seg{margin:0;padding:0 8px;gap:0;border-radius:0;background:none;box-shadow:inset 0 -1px 0 var(--line)}
+html.geek .seg button{border-radius:0;padding:7px 8px 7px;font:12px var(--mono);color:var(--faint)}
+html.geek .seg button[aria-selected="true"]{background:none;color:var(--g-hi);font-weight:700;box-shadow:inset 0 -2px 0 var(--g)}
+html.geek .seg button em{font:11px var(--mono)}
+
+/* ---------- 里面的小零件：方的、细线、等宽字 ---------- */
+html.geek .sec{font:700 11.5px/1.2 var(--mono);color:var(--g);letter-spacing:.04em;margin:14px 0 7px}
+html.geek .sec::before{content:"##";color:var(--faint);font-weight:400}
+html.geek .sec::after{background:none;border-top:1px dashed var(--line);height:0}
+html.geek .chip,html.geek .tag{border-radius:1px;background:none;box-shadow:inset 0 0 0 1px currentColor;font:11.5px/1.65 var(--mono);color:var(--soft)}
+html.geek .chip.no,html.geek .tag.bad{color:var(--bad);background:none}
+html.geek .tag.good{color:var(--good);background:none}html.geek .tag.warn,html.geek .tag.fed{color:var(--warn);background:none}html.geek .tag.blue{color:var(--g);background:none}
+html.geek .tag.dot::before,html.geek .legend span::before,html.geek .flegend span::before,html.geek .rcpt li::before{border-radius:0}
+html.geek .n,html.geek .big,html.geek .stat b,html.geek .meter em,html.geek .blist em,html.geek .rcpt em,html.geek .rc-tot b,html.geek .scale-cap b,html.geek .layer em,html.geek .fstamp b{font-family:var(--mono);font-weight:700}
+html.geek .n{font-size:15px;color:var(--g-hi)}html.geek .big{font-size:26px;color:var(--g-hi)}
+html.geek .stat{border-radius:0;background:none;box-shadow:inset 2px 0 0 var(--rule)}
+html.geek .stat b{font-size:19px;color:var(--g-hi)}
+html.geek .stat.warn b{color:var(--warn)}html.geek .stat.bad b{color:var(--bad)}
+/* 进度条：一格一格的方块，像终端里的 [█████░░░] */
+html.geek .meter b{font:12.5px/1 var(--mono);color:var(--ink)}
+html.geek .meter em{font-size:13px;color:var(--g-hi)}
+html.geek .meter .bar,html.geek .prog{height:8px;border-radius:0;box-shadow:none;background:repeating-linear-gradient(90deg,rgba(var(--g-rgb),.16) 0 5px,transparent 5px 7px)}
+html.geek .meter .bar i,html.geek .prog i{border-radius:0;background:repeating-linear-gradient(90deg,var(--g) 0 5px,transparent 5px 7px);filter:drop-shadow(0 0 4px rgba(var(--g-rgb),.6))}
+html.geek .meter .bar.warm i{background:repeating-linear-gradient(90deg,var(--warn) 0 5px,transparent 5px 7px);filter:drop-shadow(0 0 4px rgba(255,181,71,.5))}
+html.geek .meter .bar.warm + em{color:var(--warn)}
+html.geek .meter + .meter,html.geek .mrow + .mrow,html.geek .dl dt:not(:first-of-type),html.geek .dl dt:not(:first-of-type) + dd,html.geek .letter + .letter,html.geek .sw + .sw{border-top:1px dashed var(--line)}
+html.geek .cbar{height:8px;border-radius:0}
+html.geek .heat i,html.geek .vb-s,html.geek .hm i,html.geek .rc-bar,html.geek .age,html.geek .age i,html.geek .tp-bars i{border-radius:0}
+html.geek .heat i{background:var(--g);opacity:.7}html.geek .heat i.pk{background:var(--blush);opacity:1}
+html.geek .blist .row{border-radius:0}
+html.geek .blist .bf{border-radius:0;background:rgba(var(--g-rgb),.13);box-shadow:inset -2px 0 0 rgba(var(--g-rgb),.65)}  /* 排行的条一律主色，不用纸面那套橘色 */
+html.geek .blist .rk{font:12px/1 var(--mono)}
+html.geek .blist em{font-size:13px;color:var(--g-hi)}
+/* 头像：方一点，压成主色的单色，指上去才是原色 */
+html.geek .blist img,html.geek .avs img,html.geek .who img,html.geek .fc-foot img{border-radius:2px;filter:grayscale(1) contrast(1.1) brightness(.95);transition:filter .2s}
+html.geek .avs img{box-shadow:0 0 0 2px var(--bg);background:var(--bg)}
+html.geek .who img{box-shadow:0 0 0 1px var(--rule)}
+html.geek .blist .row:hover img,html.geek .avs:hover img,html.geek .who:hover img{filter:none}
+html.geek .tl > li::before{width:0;background:none;border-left:1px dashed var(--rule)}
+html.geek .tl > li::after{border-radius:0;width:7px;height:7px;left:2px;top:6px;background:var(--bg);border-width:1.5px}
+html.geek .tl-h b{color:var(--g-hi)}
+html.geek .tl .tl-box,html.geek .letter q,html.geek .tp-q,html.geek .report-text{border-radius:0;background:none;box-shadow:inset 2px 0 0 var(--rule)}
+html.geek .callout{border-radius:0;background:none;box-shadow:inset 2px 0 0 var(--g);color:var(--soft)}
+html.geek .callout.warn{box-shadow:inset 2px 0 0 var(--warn)}html.geek .callout.bad{box-shadow:inset 2px 0 0 var(--bad)}
+html.geek .rcpt li + li{border-top-color:var(--line)}
+html.geek .ldg-r{border-radius:0}html.geek .ldg-r.now{box-shadow:inset 2px 0 0 var(--g)}
+html.geek .ldg-bar{border-radius:0;height:6px}
+html.geek .ldg-d b,html.geek .ldg-r em{font-family:var(--mono);font-weight:700;font-size:14px}
+html.geek .ldg-r em{color:var(--g-hi)}
+html.geek .balc .bc-now{stroke:var(--bg)}html.geek .balc .bc-top circle{stroke:var(--bg)}
+html.geek .balc text{font-family:var(--mono)}
+html.geek .rc-n b{font:600 13px/1.35 var(--mono)}
+html.geek .rcpt em{font-size:13px}
+html.geek .rc-tot{border-top:1px dashed var(--g);font:13px var(--mono)}
+html.geek .rc-tot b{font-size:18px;color:var(--g-hi)}
+html.geek .fstamp{border-radius:2px;background:none;box-shadow:inset 0 0 0 1px var(--warn)}html.geek .fstamp b,html.geek .fstamp small{color:var(--warn)}
+html.geek .layer{border-radius:0;color:var(--bg)}
+html.geek .stamp,html.geek .att-stamp{border-radius:1px;font-family:var(--mono);font-size:12px}
+html.geek .lock{color:var(--blush)}
+html.geek .imp{border-radius:1px}
+html.geek .privbox{border-radius:0;box-shadow:inset 2px 0 0 var(--blush)}
+html.geek .scale-cap > span{border-radius:0;background:none;box-shadow:inset 2px 0 0 var(--g)}
+html.geek .scale-cap > span.neg{box-shadow:inset 2px 0 0 var(--bad)}
+html.geek .rd-grid:last-of-type{stroke:var(--rule)}html.geek .rd-dot{stroke:var(--bg)}
+html.geek .todo button{border-radius:0;background:none;box-shadow:inset 2px 0 0 var(--blush)}
+html.geek .todo button:hover{background:var(--blush-soft)}
+html.geek .todo em{font-family:var(--mono)}
+html.geek .group{border-radius:0;background:none;padding:0}
+html.geek .sk{border-radius:0;background:linear-gradient(90deg,var(--field) 0,rgba(var(--g-rgb),.2) 40%,var(--field) 80%) 0 0/200% 100%}
+/* 没东西的时候不贴表情包，只留一行注释 */
+html.geek .empty{align-items:flex-start;text-align:left;padding:2px 0}
+html.geek .empty img{display:none}
+html.geek .empty p{margin:0;font:12px var(--mono);color:var(--faint)}
+html.geek .empty p::before{content:"// ";color:var(--g)}
+/* 往下还有：像 less 的 -- More -- */
+html.geek .more{border-radius:0;background:var(--win);box-shadow:var(--float);border:0;color:var(--g-hi);font:11.5px var(--mono);backdrop-filter:none;-webkit-backdrop-filter:none}
+html.geek .more::before{content:"--"}html.geek .more::after{content:"--"}
+html.geek .more:hover{background:var(--g);color:var(--bg)}
+
+/* ---------- 按钮、开关、输入框 ---------- */
+html.geek .btn{height:30px;border-radius:0;background:none;border:1px solid var(--g);color:var(--g-hi);box-shadow:none;font:600 12px var(--mono)}
+html.geek .btn::before{content:"[";color:var(--g);margin-right:2px}html.geek .btn::after{content:"]";color:var(--g);margin-left:2px}
+html.geek .btn:hover{background:var(--g);color:var(--bg);box-shadow:0 0 16px -2px rgba(var(--g-rgb),.7)}
+html.geek .btn:hover::before,html.geek .btn:hover::after{color:var(--bg)}
+html.geek .btn.alt{background:none;border-color:var(--rule);color:var(--ink)}
+html.geek .btn.alt:hover{background:var(--field);border-color:var(--g);color:var(--g-hi);box-shadow:none}
+html.geek .btn.alt:hover::before,html.geek .btn.alt:hover::after{color:var(--g)}
+html.geek .btn.danger{background:none;color:var(--bad);border-color:rgba(255,92,122,.5)}
+html.geek .btn.danger::before,html.geek .btn.danger::after{color:var(--bad)}
+html.geek .btn.danger:hover{background:var(--bad-soft);box-shadow:none}
+html.geek .btn[data-armed]{background:var(--blush);border-color:var(--blush);color:var(--bg)}
+html.geek .btn[data-armed]::before,html.geek .btn[data-armed]::after{color:var(--bg)}
+html.geek .btn.sm{height:26px;font-size:11.5px}
+/* 开关：一个写着 ON / OFF 的小方块 */
+html.geek .sw > span{font-size:12.5px}
+html.geek .sw i{width:44px;height:20px;border-radius:0;background:none;box-shadow:inset 0 0 0 1px var(--rule)}
+html.geek .sw i::after{content:"OFF";left:0;top:0;width:100%;height:100%;border-radius:0;background:none;box-shadow:none;transform:none!important;transition:none;
+  display:grid;place-items:center;font:700 10px/1 var(--mono);letter-spacing:.08em;color:var(--faint)}
+html.geek .sw input:checked + i{background:var(--g);box-shadow:0 0 12px -2px rgba(var(--g-rgb),.7)}
+html.geek .sw input:checked + i::after{content:"ON";color:var(--bg)}
+html.geek .sw select,html.geek .mtool select,html.geek .mg-acts select{height:26px;background-color:var(--win-solid);color:var(--ink);border-color:var(--rule);border-radius:0;font:12px var(--mono)}
+html.geek input,html.geek textarea,html.geek .feedf input,html.geek .inline input,html.geek .rv-note{border-radius:0;background:var(--win-solid);color:var(--ink);border-color:var(--rule);font-family:var(--mono)}
+html.geek input:focus,html.geek textarea:focus,html.geek .feedf input:focus,html.geek .inline input:focus{outline:none;background:var(--win-solid);border-color:var(--g);box-shadow:0 0 0 1px var(--g)}
+html.geek #qzText{background:repeating-linear-gradient(transparent 0 27px,var(--line) 27px 28px) local,var(--win-solid);background-position:0 4px}
+html.geek .rvb{border-radius:0;background:none;font-family:var(--mono)}
+html.geek .rvb[aria-pressed="true"]{color:var(--bg)}
+html.geek .fd-del{font-family:var(--mono)}
+html.geek .qz-pic img,html.geek .mp-img{border-radius:0}
+
+/* ---------- 小纸条（指上去冒出来的） ---------- */
+html.geek #tip{background:var(--win-solid);color:var(--ink);border:0;border-radius:0;box-shadow:var(--float);font:12px/1.55 var(--mono)}
+html.geek #tip .tip-a{background:var(--win-solid);border-radius:0;box-shadow:1px 1px 0 rgba(var(--g-rgb),.34)}
+html.geek .tp-who b{font:700 14px/1.2 var(--mono);color:var(--g-hi)}
+html.geek .tp-bars em{font:12px/1 var(--mono)}
+
+/* ---------- 心里的人：绕着她的人泡泡、手里的卡、卡册 ---------- */
+/* 人不再是彩色圆泡泡：方形节点挂在几圈虚线轨道上，头像灰阶染主色，指上去才回到原色；
+   对 TA 最深的那种感情只留右上角一颗小灯（颜色还是那几种），主人是双框，闹别扭的是虚线框 */
+html.geek .ppl{border-radius:1px;background:var(--bg);box-shadow:0 0 0 1px rgba(var(--g-rgb),.5),0 6px 14px -6px #000}
+html.geek .ppl img{border-radius:0;filter:grayscale(1) contrast(1.3) brightness(.6);transition:filter .2s}
+html.geek .ppl::before{content:"";position:absolute;inset:0;z-index:1;background:var(--g);mix-blend-mode:multiply;pointer-events:none;transition:opacity .2s}  /* 正片叠底：白的变主色、黑的还是黑，像单色屏 */
+html.geek .ppl:not(.att)::after{content:"";position:absolute;z-index:2;right:-3px;top:-3px;width:6px;height:6px;background:var(--c);box-shadow:0 0 6px var(--c)}
+html.geek .ppl:hover,html.geek .ppl.sel{box-shadow:0 0 0 1px var(--g-hi),0 0 0 4px var(--bg),0 0 0 5px var(--g),0 0 24px rgba(var(--g-rgb),.55)}
+html.geek .ppl:hover img,html.geek .ppl.sel img{filter:none}
+html.geek .ppl:hover::before,html.geek .ppl.sel::before{opacity:0}
+html.geek .ppl.owner:not(:hover):not(.sel){box-shadow:0 0 0 1px var(--g-hi),0 0 0 3px var(--bg),0 0 0 4px rgba(var(--g-rgb),.7),0 6px 14px -6px #000}
+html.geek .ppl.att{filter:none;box-shadow:none;outline:1px dashed rgba(var(--g-rgb),.55);outline-offset:0}
+html.geek .ppl.att img{filter:grayscale(1) brightness(.5)}
+html.geek .ppl.att::after{border-radius:0;border-width:1px;background:var(--win-solid);font:10px/1.4 var(--mono);transform:none}
+html.geek .ppl .nm{border-radius:0;background:var(--win-solid);color:var(--ink);font-family:var(--mono);box-shadow:0 0 0 1px var(--rule)}
+html.geek .ring-layer.picked .ppl:not(.sel){opacity:.2;filter:none}
+html.geek #field .orbit{stroke:rgba(var(--g-rgb),.5)}
+html.geek #field.on .orbit{opacity:1}
+html.geek #tie{stroke:var(--g)}
+html.geek .flyer{box-shadow:0 0 0 2px var(--g),0 10px 30px #000}
+html.geek .ghost{background:none;border:1px solid rgba(var(--g-rgb),.7);box-shadow:0 0 14px rgba(var(--g-rgb),.4)}
+html.geek .deck{color:var(--ink)}
+html.geek .deck-h{font:700 14px/1.2 var(--mono);color:var(--g-hi);text-shadow:none}
+html.geek .deck-h::before{content:"$ ls 卡/ ";color:var(--g);font-weight:400}
+html.geek .deck-h small{font:11px var(--mono);color:var(--faint);opacity:1}
+html.geek .album-btn{border-radius:0;border:0;background:var(--win);box-shadow:var(--float);color:var(--g-hi);font:600 12px var(--mono);text-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+html.geek .album-btn:hover{background:var(--g);color:var(--bg)}
+html.geek .fc-hint{font-family:var(--mono);color:var(--faint);text-shadow:none}
+/* 没投喂过的卡：黑底，框用这张卡的档位颜色；投喂过的有自己的画，不动 */
+html.geek .mcard:not(.fed){padding:1px;border-radius:2px;background:var(--t1);color:var(--ink);font-family:var(--mono);box-shadow:0 14px 26px -12px #000,0 0 18px -8px var(--t1)}
+html.geek .mcard:not(.fed) .mc-in{border-radius:1px;background:var(--win-solid)}
+html.geek .mcard:not(.fed) .mc-art{background:#0a1224}
+html.geek .mcard:not(.fed) .mc-art img{filter:grayscale(1) contrast(1.1)}
+html.geek .mcard:not(.fed):hover .mc-art img{filter:none}
+html.geek .mc-art::after,html.geek .fc-art::after{display:none}
+html.geek .mcard .mc-name{font:700 13px/1.25 var(--mono)}
+html.geek .mcard:not(.fed) .mc-impr{color:var(--soft);font:11px/1.45 var(--mono)}
+html.geek .mc-fav,html.geek .mc-stage,html.geek .mc-rank{border-radius:0;font-family:var(--mono)}
+html.geek .fcard:not(.fed){color:var(--ink);font-family:var(--mono)}
+html.geek .fcard:not(.fed) .fc-face{border-radius:3px;padding:1px;background:var(--t1);box-shadow:0 30px 50px -16px #000,0 0 40px -14px var(--t1)}
+html.geek .fcard:not(.fed) .fc-face > *:not(.holo){background:var(--win-solid)}
+html.geek .fcard:not(.fed) .fc-top{border-radius:0;color:var(--soft);font-family:var(--mono)}
+html.geek .fcard:not(.fed) .fc-tier{font-family:var(--mono);color:var(--t2)}
+html.geek .fcard:not(.fed) .fc-art{padding:0}
+html.geek .fcard:not(.fed) .fc-art img{border-radius:0}
+html.geek .fcard:not(.fed) .fc-body,html.geek .fcard:not(.fed) .fc-back-in{border-radius:0}
+html.geek .fcard:not(.fed) .fc-name{font:700 21px/1.25 var(--mono);color:var(--g-hi)}
+html.geek .fcard:not(.fed) .fc-mood,html.geek .fcard:not(.fed) .fc-att-st{border-radius:0;background:rgba(6,11,23,.9);color:var(--ink)}
+html.geek .fcard:not(.fed) .fc-fav{border-radius:0;font-family:var(--mono)}
+html.geek .fcard:not(.fed) .fc-stats{border-color:var(--line)}html.geek .fcard:not(.fed) .fc-stats div + div{border-color:var(--line)}
+html.geek .fcard:not(.fed) .fc-stats b{font-family:var(--mono);font-weight:700;color:var(--g-hi)}
+html.geek .fcard:not(.fed) .fc-stats small,html.geek .fcard:not(.fed) .fc-meter-l,html.geek .fcard:not(.fed) .fc-foot,html.geek .fcard:not(.fed) .fc-quote small{color:var(--faint);font-family:var(--mono)}
+html.geek .fcard:not(.fed) .fc-meter{border-radius:0;height:5px}
+html.geek .fcard:not(.fed) .fc-meter i{border-radius:0;background:var(--bg)}
+html.geek .fcard:not(.fed) .fc-quote{border-radius:0;background:none;box-shadow:inset 2px 0 0 var(--t1)}
+html.geek .fcard:not(.fed) .fc-quote p{font-size:14px}
+html.geek .fcard:not(.fed) .fc-feel span{border-radius:0}
+html.geek .fcard:not(.fed) .fc-h{font:700 13px/1.2 var(--mono);color:var(--g-hi)}
+html.geek .fcard:not(.fed) .fc-hist li::before{border-radius:0;background:var(--bg)}
+html.geek .fcard:not(.fed) .holo{display:none}
+html.geek #album{background:rgba(2,4,9,.93)}
+html.geek .al-head{color:var(--ink)}
+html.geek .al-head h2{font:700 20px/1 var(--mono);color:var(--g-hi);text-shadow:none}
+html.geek .al-head h2::before{content:"$ ls -l 卡册/ ";color:var(--g);font-weight:400;font-size:14px}
+html.geek #alCount{font-family:var(--mono);color:var(--faint);opacity:1}
+html.geek .al-sort{border-radius:0;background:none;box-shadow:inset 0 0 0 1px var(--rule)}
+html.geek .al-sort button{border-radius:0;font:12px var(--mono);color:var(--soft)}
+html.geek .al-sort button[aria-pressed="true"]{background:var(--g);color:var(--bg)}
+html.geek #alFind{border-radius:0;background:var(--win-solid);border-color:var(--rule);color:var(--ink);font-family:var(--mono)}
+html.geek #alFind::placeholder{color:var(--faint)}
+html.geek .al-x{border-radius:0;background:none;border-color:var(--rule);color:var(--g-hi)}
+
+/* ---------- 底部脑区菜单：斜切的格子，选中的那个填满主色（女神异闻录菜单那种） ---------- */
+html.geek #dock{border-radius:1px;background:var(--win);border:0;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:var(--float)}
+html.geek #dock .halo{border-radius:0;background:radial-gradient(closest-side,rgba(var(--g-rgb),.5),transparent);clip-path:polygon(18% 0,100% 0,82% 100%,0 100%)}
+html.geek .orb i{border-radius:0;background:rgba(var(--g-rgb),.06);border:0;box-shadow:inset 0 0 0 1px rgba(var(--g-rgb),.34);clip-path:polygon(14% 0,100% 0,86% 100%,0 100%);color:var(--soft)}
+html.geek .orb:hover i{background:rgba(var(--g-rgb),.2);color:var(--g-hi)}
+html.geek .orb[aria-current="true"] i{background:var(--g);color:var(--bg);box-shadow:none}
+html.geek .orb span{font:11.5px/1 var(--mono);text-shadow:none;color:var(--faint)}
+html.geek .orb[aria-current="true"] span{font:700 12px/1 var(--mono);color:var(--g-hi);text-shadow:0 0 10px rgba(var(--g-rgb),.8)}
+html.geek .orb small{border-radius:0;background:var(--bad);box-shadow:none;font-family:var(--mono)}
+@media (prefers-reduced-motion:reduce){
+  html.geek .geek-scan{background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(0,0,0,.55))}
+  html.geek .kpi-name b::after{animation:none}
+  html.geek .card,html.geek .card:hover{transition:none;transform:none}
+}
+
+/* 10-27 感情换成字：好感度刻线、她看到的那句 */
+html.geek .fcard:not(.fed) .fc-meter .tk{border-radius:0;background:var(--t1)}
+html.geek .feel-line p{border-radius:0;background:none;box-shadow:inset 2px 0 0 var(--t1);font-family:var(--mono);font-size:13px}
+html.geek .feel-line small{color:var(--faint);font-family:var(--mono)}
+html.geek .rd-ghost{stroke:var(--bad)}
+/* 表情包那页 */
+html.geek .mchip{border-radius:0;background:transparent;font-family:var(--mono)}
+html.geek .mchip[aria-pressed="true"]{background:var(--g);border-color:var(--g);color:var(--bg)}
+html.geek .mchip[aria-pressed="true"] em{color:var(--bg)}
+html.geek .mb{border-radius:0;font-family:var(--mono)}
+html.geek .mb.n{background:rgba(var(--g-rgb),.75);color:var(--bg)}
+html.geek .mt.on{box-shadow:0 0 0 2px var(--g),0 0 14px -2px rgba(var(--g-rgb),.7)}
+html.geek .mgrid.mini img{border-radius:0}
+html.geek .mg-info h3,html.geek .mg-n b{font-family:var(--mono)}
+
+/* ---------- 记忆深处：记忆线的纸、时间线 ---------- */
+html.geek .tlr{border-radius:0;font-family:var(--mono)}
+html.geek .ml-more,html.geek .ml-edit textarea,html.geek .ml-qq input{border-radius:0;font-family:var(--mono)}
+
+/* 神谕 · Oraculum：極客皮——終端裡壞掉的那一顆，紅字往外漏 */
+html.geek .sw.sw-oracle{background:#07000a;border:1px solid rgba(255,38,72,.55);border-radius:0;box-shadow:0 0 0 1px rgba(255,0,50,.12),0 0 26px -10px #ff1f3a;color:#ffd7de}
+html.geek .sw.sw-oracle>span{font:12.5px var(--mono);letter-spacing:0;text-shadow:1px 0 #ff1f3a,-1px 0 rgba(0,255,200,.25)}
+html.geek .sw.sw-oracle small{color:#ff8fa0;font:11px var(--mono)}
+html.geek .sw.sw-oracle i{background:none;box-shadow:inset 0 0 0 1px rgba(255,38,72,.6)}
+html.geek .sw.sw-oracle i::after{content:"OFF";color:#ff8fa0}
+html.geek .sw.sw-oracle input:checked+i{background:#ff2a44;box-shadow:0 0 18px -2px rgba(255,31,58,.95),inset 0 0 0 1px #ffd2da}
+html.geek .sw.sw-oracle input:checked+i::after{content:"ON";color:#12000a;font-weight:700}
+html.geek .sw.sw-oracle.on{background:#120108}
+html.geek .sw.sw-oracle.on::after{content:"// ORACLE_ACTIVE";color:#ff5a75;font:9px var(--mono)}
+html.geek .sw.sw-oracle.on{animation:oraclePulse 2.8s ease-in-out infinite}
+html.geek .sw.sw-oracle .lk{color:rgba(255,70,100,.75);text-shadow:0 0 8px #ff1f3a}
+
+/* 此刻的取景框（random-eyes）：只在极客、此刻、宽屏时出现；只有左边那列动作能点 */
+#vf{display:none}
+html.geek #vf:not([hidden]){display:block;position:fixed;z-index:2;pointer-events:none;color:var(--g);font:10.5px/1.5 var(--mono)}
+#vf svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none;stroke:rgba(var(--g-rgb),.55);stroke-width:.18;vector-effect:non-scaling-stroke}
+#vf .vf-o{stroke:rgba(var(--g-rgb),.18);stroke-dasharray:.6 1.4}
+#vf .vf-t line{stroke:rgba(var(--g-rgb),.4)}
+#vf .vf-r{stroke:var(--g-hi);stroke-width:1.4;stroke-linecap:round;transform-origin:50% 50%;animation:vfSpin 24s linear infinite}
+#vf .vf-b{stroke:var(--g-hi);stroke-width:1.2}
+@keyframes vfSpin{to{transform:rotate(360deg)}}
+#vf .vf-rd{position:absolute;white-space:pre;letter-spacing:.06em;color:rgba(var(--g-rgb),.95)}
+#vf .vf-l{left:4%;top:4%}
+#vf .vf-rt{right:4%;top:4%;text-align:right}
+#vf .vf-acts{position:absolute;left:-14px;top:50%;transform:translate(-100%,-50%);display:grid;gap:6px;pointer-events:auto}
+#vf .vf-acts button{display:flex;align-items:center;gap:7px;padding:2px 6px;border:0;background:none;color:rgba(var(--g-rgb),.85);font:11px var(--mono);cursor:pointer;text-align:left}
+#vf .vf-acts button i{width:10px;height:10px;border:1px solid var(--g);flex:none}
+#vf .vf-acts button[aria-pressed="true"]{color:var(--g-hi)}
+#vf .vf-acts button[aria-pressed="true"] i{background:var(--g);box-shadow:0 0 8px var(--g)}
+#vf .vf-acts button:hover{color:var(--g-hi)}
+#vf .vf-acts button:focus-visible{outline:1px solid var(--g-hi);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#vf .vf-r{animation:none}}
+/* 「只看她」开着：描一圈主色、亮一点 */
+html.geek .solo-btn[aria-pressed="true"]{border-color:var(--g);color:var(--g-hi);box-shadow:inset 0 0 0 1px var(--g),0 0 12px -2px rgba(var(--g-rgb),.7)}
+/* 取景框右下角的开关：四角括号框着的小字，像相机的快门键 */
+#vfBtn{display:none}
+html.geek #vfBtn:not([hidden]){display:block;position:fixed;right:24px;bottom:68px;z-index:3;padding:8px 14px;border:0;background:
+  linear-gradient(var(--g-hi),var(--g-hi)) left top/8px 1px,linear-gradient(var(--g-hi),var(--g-hi)) left top/1px 8px,
+  linear-gradient(var(--g-hi),var(--g-hi)) right top/8px 1px,linear-gradient(var(--g-hi),var(--g-hi)) right top/1px 8px,
+  linear-gradient(var(--g-hi),var(--g-hi)) left bottom/8px 1px,linear-gradient(var(--g-hi),var(--g-hi)) left bottom/1px 8px,
+  linear-gradient(var(--g-hi),var(--g-hi)) right bottom/8px 1px,linear-gradient(var(--g-hi),var(--g-hi)) right bottom/1px 8px;
+  background-repeat:no-repeat;color:rgba(var(--g-rgb),.95);font:11px var(--mono);letter-spacing:.08em;cursor:pointer}
+html.geek #vfBtn:hover{color:var(--g-hi);background-color:rgba(var(--g-rgb),.12)}
+html.geek #vfBtn:focus-visible{outline:1px solid var(--g-hi);outline-offset:3px}
+/* 「只看她」的放大缩小：方框、等宽字 */
+html.geek #zoomCtl{border-radius:0;background:rgba(2,4,9,.7);border-color:rgba(var(--g-rgb),.45);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+html.geek #zoomCtl button{border-radius:0;color:var(--g-hi);font-family:var(--mono)}
+html.geek #zoomCtl button:hover:not(:disabled){background:rgba(var(--g-rgb),.18)}
+/* bot 标识：方的、描边 */
+html.geek .botm{border-radius:0;background:none;color:var(--g);box-shadow:inset 0 0 0 1px var(--g)}
+html.geek .ppl .bt{border-radius:0;background:var(--win-solid);color:var(--g);box-shadow:inset 0 0 0 1px var(--g)}
+html.geek :is(.botm,.ppl .bt) img{border-radius:0;filter:grayscale(1) contrast(1.15)}
+html.geek .bot-who :is(select,input){border-radius:0;background:var(--win-solid);color:var(--g);border-color:var(--g)}

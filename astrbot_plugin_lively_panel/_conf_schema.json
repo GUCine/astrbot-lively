@@ -11,6 +11,18 @@
     "hint": "面板經 Cloudflare Access 登入，這裡核對 Cf-Access-Authenticated-User-Email。本機和宿主機訪問不受限制",
     "default": []
   },
+  "cf_team_domain": {
+    "description": "Cloudflare Access 團隊域名",
+    "type": "string",
+    "hint": "例如 myteam.cloudflareaccess.com（Zero Trust 設定裡的 Team domain）。和 cf_aud 都填了，就驗 Cf-Access-Jwt-Assertion 的簽名再拿郵箱；沒填只看郵箱頭，同一個 docker 網路裡的容器能偽造",
+    "default": ""
+  },
+  "cf_aud": {
+    "description": "Access 應用的 AUD 標籤",
+    "type": "string",
+    "hint": "Zero Trust → Access → 應用程式 → 面板那個應用 → 概觀裡的「Application Audience (AUD) Tag」",
+    "default": ""
+  },
   "host": {
     "description": "監聽地址",
     "type": "string",

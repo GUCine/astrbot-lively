@@ -44,8 +44,8 @@
   "owner_traditional": {
     "description": "發給主人的消息用繁體",
     "type": "bool",
-    "hint": "各插件私信主人的通知、指令回覆轉成繁體（需要 opencc-python-reimplemented）。群聊和給模型的提示詞不轉",
-    "default": true
+    "hint": "各插件私信主人的通知、指令回覆轉成繁體（需要 opencc-python-reimplemented）。預設關：照平常的說法發。群聊和給模型的提示詞不轉",
+    "default": false
   },
   "platform_id": {
     "description": "NapCat 平台 ID",
@@ -57,6 +57,13 @@
     "description": "機器人用的人格 ID",
     "type": "string",
     "hint": "後台寫說說、主動聊天開場白時套用這個人格的提示詞。留空用 AstrBot 預設人格",
+    "default": ""
+  },
+  "words_provider_id": {
+    "description": "後台的事交給她寫一句時用的模型",
+    "type": "string",
+    "_special": "select_provider",
+    "hint": "好友申請、說說待審、飯錢快沒了這類要私信主人的事，插件不寫固定句，把事實交給她寫一句（帶人設）。留空用各插件自己的模型",
     "default": ""
   },
   "group_provider_id": {
@@ -84,5 +91,121 @@
     "type": "list",
     "hint": "群裡的其他機器人填這裡，避免機器人之間對聊",
     "default": []
+  },
+  "rewrite_group_context": {
+    "description": "改寫群聊背景",
+    "type": "bool",
+    "hint": "AstrBot 自帶的群聊上下文會把上次回話後群裡的消息整塊塞給模型，模型容易逐條回應沒叫它的話。開著時改成：只留最近幾條、標明只是背景、最後寫清楚這輪要回的是誰說的哪句、有沒有叫它；不存進對話歷史",
+    "default": true
+  },
+  "group_context_lines": {
+    "description": "群聊背景最多留幾條",
+    "type": "int",
+    "hint": "只在「改寫群聊背景」開著時有用",
+    "default": 15
+  },
+  "join_reply_lines": {
+    "description": "歷史裡的回覆合成一行",
+    "type": "bool",
+    "hint": "模型照著前文的樣子寫：以前的回覆多是兩行，之後就一直寫兩行（換行會切成兩個氣泡）。開著時，每輪送去問模型前把歷史裡機器人自己回覆的換行改成空格，條數交給她當下判斷；她用空格隔開的兩段話（中文和中文之間的空格），發送前照常拆成兩條",
+    "default": true
+  },
+  "draft_guard": {
+    "description": "攔下起草稿",
+    "type": "bool",
+    "hint": "模型偶爾把「怎麼回」的草稿（情景、清單、「写：」、好感備註）連同終稿一起寫成正文，分段回覆會把它切成一串氣泡。開著時：每輪提醒一句只說要發的話；真漏了就挑出終稿再發，挑不出來請模型重寫一句，還不行就這輪不發",
+    "default": true
+  },
+  "tool_said_note": {
+    "description": "告訴她調工具前那幾句已經發出去了",
+    "type": "bool",
+    "hint": "調工具前那一步寫的話會當場發出去，工具回來後是另一次生成，她常不知道前面已經發了，把同一件事換個說法再說一遍。開著時，每一步第一個工具的結果後面寫上「这一轮你已经发出去的话：「…」，再写会另发一条」（只講事實）。改了不用重啟",
+    "default": true
+  },
+  "rules_in_system": {
+    "description": "每輪一樣的說明放 system 最後",
+    "type": "bool",
+    "hint": "相處經驗（成長插件）、起草提醒（本插件）每輪都一樣。開著時接在 system 最後、排在對話歷史前面，DeepSeek 前綴快取命中得到；關掉就照舊掛在這輪消息後面（每輪都算沒命中，約 190 token）。好感標記的規矩不搬：重放時搬到 system，她常常忘了寫標記。兩個插件都讀這一項，改了不用重啟",
+    "default": true
+  },
+  "icl_caption_timeout": {
+    "description": "群聊背景圖片描述最多等幾秒",
+    "type": "int",
+    "hint": "AstrBot 記群聊背景時會當場給每張圖要描述，模型卡住會等滿 120 秒，期間整個群的消息都停著。超過這個秒數就記成「图片没看清」。0 = 不管",
+    "default": 15
+  },
+  "caption_provider": {
+    "description": "看圖用哪個模型（面板「看圖走降智版」寫這裡）",
+    "type": "string",
+    "hint": "留空 = 照 AstrBot 的圖片描述模型；寫 provider id（例如 workbuddy-caption）就先請它看，出錯、超時或看不懂再拿 AstrBot 原來那個重看一次。一般從面板撥開關，不用手改",
+    "default": ""
+  },
+  "group_thread_dm": {
+    "description": "私聊帶上 TA 剛在群裡跟她說的",
+    "type": "bool",
+    "hint": "TA 在群裡叫了她、說了幾句，兩小時內轉到私聊時，把那幾句、她在那個群回的和用工具發的帶進私聊那一輪（存進歷史，不重複帶）。10-30 主人在群裡交代畫圖、轉私聊接著說，私聊這邊不知道照哪張畫",
+    "default": true
+  },
+  "keep_context_lines": {
+    "description": "背景留幾條進對話歷史",
+    "type": "int",
+    "hint": "整塊群聊背景只給這一輪看、不存；這裡留最後幾條（每條截到 60 字）跟著這輪存進對話歷史，以後回頭看還知道當時在聊什麼。0 是不留（預設先不留：存進歷史的群聊可能讓她又去接沒叫她的話，觀察完再開）",
+    "default": 0
+  },
+  "listen_dm": {
+    "description": "私聊先聽 TA 說完",
+    "type": "bool",
+    "hint": "私聊每條都先等幾秒，看 TA 還有沒有下文，連發的幾條合成一條回一次。等多久按這個人平時連發的間隔算（陌生人先用預設），最後一句像說完了（？！結尾）短一點、沒說完（，…結尾）長一點，最多 15 秒",
+    "default": true
+  },
+  "listen_group": {
+    "description": "群裡被叫到後先聽 TA 說完",
+    "type": "bool",
+    "hint": "群裡被 @、被喊名字之後，同一個人接著發的幾條合成一條再回。只合併叫她的那個人說的",
+    "default": true
+  },
+  "silence_followup": {
+    "description": "私聊沉默時再說一句",
+    "type": "string",
+    "options": [
+      "off",
+      "log",
+      "on"
+    ],
+    "hint": "私聊聊到難受的事（或話沒說完），〈我〉回完之後 TA 好久沒說話，讓她自己決定要不要再說一句（追問、安慰，或者不打扰）。off 不管；log 只記錄她想說什麼（plugin_data/astrbot_plugin_lively_gate/silence.jsonl），不發；on 真的發。每次要問一次模型",
+    "default": "log"
+  },
+  "silence_k": {
+    "description": "多久不說話算「好久」：TA 平時回覆時間的幾倍",
+    "type": "float",
+    "hint": "按這個人平時在私聊裡回〈我〉要多久算，再夾在下面兩個秒數之間",
+    "default": 4.0
+  },
+  "silence_min": {
+    "description": "沉默最短等幾秒",
+    "type": "int",
+    "default": 90
+  },
+  "silence_max": {
+    "description": "沉默最長等幾秒",
+    "type": "int",
+    "default": 900
+  },
+  "silence_daily": {
+    "description": "沉默時再說一句：同一個人一天最多幾次",
+    "type": "int",
+    "default": 3
+  },
+  "silence_quiet_hours": {
+    "description": "這些鐘點不在沉默時說話",
+    "type": "string",
+    "hint": "格式「開始-結束」（24 小時制，含開始不含結束），例如 1-8 是凌晨 1 點到 8 點。留空 = 不限",
+    "default": "1-8"
+  },
+  "expand_forward": {
+    "description": "展開轉發的聊天記錄",
+    "type": "bool",
+    "hint": "有人發了轉發的聊天記錄，收到時向 NapCat 要裡面的內容，寫進這條消息（群聊背景、長期記憶都看得到）；叫到〈我〉的那條另外單獨帶給她。拿不到內容就照實寫拿不到",
+    "default": true
   }
 }

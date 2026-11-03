@@ -18,7 +18,7 @@
 | [lively_comic](https://github.com/GUCine/astrbot_plugin_lively_comic) 每日群聊漫畫 | 每天把群聊畫成漫畫，主人審核後發群；主人可以讓它畫畫 | 群分析總結插件 |
 | [lively_qzone](https://github.com/GUCine/astrbot_plugin_lively_qzone) QQ 空間說說 | 寫說說，主人審核後發佈 | NapCat |
 | [lively_social](https://github.com/GUCine/astrbot_plugin_lively_social) 好友與群邀請管家 | 好友申請、群邀請、禁言踢出通知 | — |
-| [lively_voice](https://github.com/GUCine/astrbot_plugin_lively_voice) 語音回覆 | 偶爾把短回覆變成語音 | MiniMax |
+| [lively_voice](https://github.com/GUCine/astrbot_plugin_lively_voice) 語音 | 她想說的時候用自己的聲音發 QQ 語音 | BreezeBlue |
 | [lively_evolve](https://github.com/GUCine/astrbot_plugin_lively_evolve) 自我成長 | 按大家的反應微調參數、總結經驗、例行動作、每週提案 | — |
 | [lively_billing](https://github.com/GUCine/astrbot_plugin_lively_billing) DeepSeek 用量帳本 | 每小時記 DeepSeek 餘額，算每天真實花費，餘額不足提醒 | DeepSeek |
 | [lively_panel](https://github.com/GUCine/astrbot_plugin_lively_panel) 網頁控制面板 | 網頁面板：狀態、關係圖、卡冊、開關、待審核、飯錢、日誌 | — |
@@ -48,7 +48,7 @@
    - `groups`：要服務的群號
    - `bot_name`：機器人的名字（群友喊這個名字當作 @ 它；留空就不啟用這個功能，其他插件也只認 @ 和私聊）
    - `self_call` / `owner_call` / `card_name`：機器人的自稱、對主人的稱呼、印象卡的叫法（留空分別是「我」「主人」「印象卡」）
-   - `owner_traditional`：各插件發給主人的消息轉成繁體（預設開啟；群聊和給模型的提示詞不轉）
+   - `owner_traditional`：各插件發給主人的消息轉成繁體（預設關閉；群聊和給模型的提示詞不轉）
    - 其他項（機器人 QQ、平台 ID、模型）留空會自動識別或用 AstrBot 預設
 3. 其他插件按需在各自的配置裡選模型、調參數。不想用 WebUI 的話，配置文件在 `data/config/<插件目錄名>_config.json`。
 
@@ -78,14 +78,12 @@ python3 scripts/gen_readme.py
 
 | 素材 | 來源 | 放到哪裡 | 沒放會怎樣 |
 | --- | --- | --- | --- |
-| 桌寵動畫 | [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)（素材禁止商用，轉載和改作需署名並附原倉庫連結） | `astrbot_plugin_lively_panel/static/pet/` | 面板不顯示桌寵 |
-| 表情包 | 梗鯨 | `astrbot_plugin_lively_panel/static/meme/` | 面板空狀態不配圖 |
+| Live2D 形象 | 任何 Cubism 4／5 模型；作者自己用的是 DeepSeek-chan 免費模型（立繪 神宮涼子 Kamiya Ryoko、Live2D 霓虹貓_NeonNeko；可免費個人使用，**不能轉載模型檔案**，請到作者的發佈頁下載） | `面板 static/live2d/`：`avatar.json`（形象設定）、模型目錄、`lib/`（Cubism Core 5、pixi.js 6.5、pixi-live2d-display 0.4） | 正中間不放形象，只留她的對話框；極客模式只有代碼雨 |
+| 表情包 | [梗鯨](https://aigengtu.com/) | `astrbot_plugin_lively_panel/static/meme/` | 面板空狀態不配圖 |
 | 標題手寫字體 | [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet) | 面板 `static/font/rt.woff2`（子集）和 `rt-full.woff2`；卡片 `astrbot_plugin_lively_bond/card_assets/rt.woff2` | 用系統字體；卡片用中文黑體（Debian/Ubuntu 裝 `fonts-noto-cjk`） |
 
 面板認的文件名：
 
-- 桌寵：每個動作三份——`<動作>.webm`（帶透明通道的動畫）、`<動作>.webp`（動圖）、`<動作>.p.webp`（靜態封面，系統開了「減少動態效果」時用）。動作有：
-  breakfast breathe bubble busy cheer crab cube curtsy dance dinner drag file float giggle hop hum look lunch mutter pout rice run shy sigh sleep startle stretch tail think token wave yawn
 - 表情包：`ciallo` `cute` `dead` `full` `great` `keep` `meh` `rice` `sleep` `stress`，都是 `.webp`
 
 換成自己的角色時，直接用同樣的文件名替換即可。面板用的 ECharts（`static/echarts.min.js`）是 Apache-2.0 許可。

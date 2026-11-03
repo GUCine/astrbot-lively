@@ -1,7 +1,8 @@
 name: astrbot_plugin_lively_panel
-display_name: 網頁控制面板
-desc: 網頁控制面板：狀態、關係圖、印象卡冊、開關、待審核、飯錢、日誌（建議經 Cloudflare Tunnel + Access 訪問）
-short_desc: 網頁控制面板：狀態、關係圖、印象卡冊、開關、待審核、日誌
+display_name: Sanctum
+cn_name: 後台  # 中文名：她的本領清單、面板這些中文的地方用（10-31 用戶定插件名用拉丁名、中文名照舊）
+desc: 網頁控制面板：機器人的「腦內」——心裡的人和印象卡、記憶、群聊、來信和說說（帶記錄）、開關、飯錢、日誌（建議經 Cloudflare Tunnel + Access 訪問）
+short_desc: 網頁控制面板：心裡的人、印象卡、記憶、來信、說說、開關、日誌
 version: 2.0.0
 author: GUCine
 repo: https://github.com/GUCine/astrbot_plugin_lively_panel
