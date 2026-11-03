@@ -1,5 +1,11 @@
 # 擬真群友（lively）插件套件
 
+![面板：此刻](docs/panel-now.png)
+
+![面板：心里的人](docs/panel-people.png)
+
+> 上图是网页控制面板（Sanctum），人名、聊天内容都是演示用的假数据。
+
 一組 [AstrBot](https://github.com/AstrBotDevs/AstrBot) 插件，讓 QQ 機器人像一個有性格的群友一樣過日子：記得每個人、有好感和心情、會主動找熟人聊天、每天給主人寫日報、畫群漫畫、發 QQ 空間、自己總結經驗，每週五把群友的願望整理成提案交給主人。
 
 機器人的名字、自稱、對主人的稱呼、印象卡的叫法都在門禁插件（astrbot_plugin_lively_gate）裡設定，各插件的提示詞和消息會自動套用；說話風格則跟著 AstrBot 裡選的人格走。
