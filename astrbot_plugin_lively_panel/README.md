@@ -1,4 +1,4 @@
-# 網頁控制面板
+# Sanctum · 網頁控制面板
 
 > 網頁控制面板：機器人的「腦內」——心裡的人和印象卡、記憶、群聊、來信和說說（帶記錄）、開關、飯錢、日誌（建議經 Cloudflare Tunnel + Access 訪問）
 
@@ -36,6 +36,8 @@ AstrBot 插件，屬於「擬真群友」（lively）插件套件。適用 AstrB
 
 `avatar.json` 寫模型在哪（`model`）、取景（`frame` 紙面、`frame_geek` 極客模式，是模型高度的比例）、各個角色參數對應模型的哪個參數（`params`：頭、身體、眼、眉、嘴…）、表情記號（`marks`：脸红、爱心眼、眼镜…對應模型的表情鍵）、手勢（`gestures`）。面板的動作（`static/l2d.js` 的 `ACTS`）只用這些名字，模型沒有的記號、手勢會略過。pixi-live2d-display 0.4 要補上 Cubism 4.2 的乘色、屏幕色才畫得對用了它們的模型：面板載的是 `lib/cubism4.js`，在它三個畫模型的片段著色器裡先乘 `u_multiplyColor`、再疊 `u_screenColor`，每個部件畫之前從 Cubism Core 的 `drawables.multiplyColors`／`screenColors` 取值。
 表情包：`ciallo` `cute` `dead` `full` `great` `keep` `meh` `rice` `sleep` `stress`，都是 `.webp`。面板用的第三方庫在 `static/vendor/`：[GSAP](https://gsap.com) 3.15（含 MotionPath、SplitText、CustomEase，GSAP 標準免費許可）、[Floating UI](https://floating-ui.com) 1.8（MIT）、[Rough Notation](https://roughnotation.com) 0.5（MIT）。
+
+**一鍵安裝素材**：`bash tools/fetch_assets.sh` 會裝好 Live2D 需要的三個庫（Cubism Core、pixi.js、pixi-live2d-display，自動補丁）；已下載 DeepSeek-chan 模型 zip 的話，`bash tools/fetch_assets.sh 模型.zip` 一併轉成面板用的檔案（要 ffmpeg、cwebp、unzip）。模型 zip 請到作者發佈頁下載（立繪神宮涼子 https://vgen.co/KAMIYA ）；表情包到[梗鯨](https://aigengtu.com/)挑圖轉成 `.webp`；字體到 [dsh-pet](https://github.com/PC2005-cloud/dsh-pet) 取得。
 
 ## 配置
 
