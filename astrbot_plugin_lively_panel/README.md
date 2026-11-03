@@ -6,6 +6,14 @@
 
 > 截图里的人名、聊天内容都是演示用的假数据。
 
+![饭钱](docs/bill.png)
+
+![群里](docs/groups.png)
+
+![记忆](docs/memory.png)
+
+> 以上三张是隐私模式下的真实页面：名字换成「用户 X」，聊天和记忆内容打码，头像模糊。
+
 > 網頁控制面板：機器人的「腦內」——心裡的人和印象卡、記憶、群聊、來信和說說（帶記錄）、開關、飯錢、日誌（建議經 Cloudflare Tunnel + Access 訪問）
 
 AstrBot 插件，屬於「擬真群友」（lively）插件套件。適用 AstrBot >=4.29.0 + NapCat（aiocqhttp）。
