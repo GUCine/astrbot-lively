@@ -10,18 +10,18 @@
 
 | 插件 | 作用 | 依賴 |
 | --- | --- | --- |
-| [lively_gate](https://github.com/GUCine/astrbot_plugin_lively_gate) 群組門禁與共用設定 | 只放行指定的群；群聊、私聊分別用不同模型；句子裡喊名字當作 @；識別表情包；攔截洩漏的內部標記。**也是整套的公共設定** | — |
-| [lively_bond](https://github.com/GUCine/astrbot_plugin_lively_bond) 好感度與印象卡 | 熟悉度、好感、心情、印象、每週人物卡；群友要「印象卡」時發一張卡片圖 | 可選 LivingMemory |
-| [lively_memtier](https://github.com/GUCine/astrbot_plugin_lively_memtier) 記憶分層壓縮 | 把 LivingMemory 的零碎記憶按日、周、月、季逐級壓縮，省 token | LivingMemory |
-| [lively_proactive](https://github.com/GUCine/astrbot_plugin_lively_proactive) 主動私聊 | 偶爾主動私聊有過交互、好感夠的熟人 | bond |
-| [lively_report](https://github.com/GUCine/astrbot_plugin_lively_report) 每日彙報 | 每晚私信主人彙報今天的情況 | — |
-| [lively_comic](https://github.com/GUCine/astrbot_plugin_lively_comic) 每日群聊漫畫 | 每天把群聊畫成漫畫，主人審核後發群；主人可以讓它畫畫 | 群分析總結插件 |
-| [lively_qzone](https://github.com/GUCine/astrbot_plugin_lively_qzone) QQ 空間說說 | 寫說說，主人審核後發佈 | NapCat |
-| [lively_social](https://github.com/GUCine/astrbot_plugin_lively_social) 好友與群邀請管家 | 好友申請、群邀請、禁言踢出通知 | — |
-| [lively_voice](https://github.com/GUCine/astrbot_plugin_lively_voice) 語音 | 她想說的時候用自己的聲音發 QQ 語音 | BreezeBlue |
-| [lively_evolve](https://github.com/GUCine/astrbot_plugin_lively_evolve) 自我成長 | 按大家的反應微調參數、總結經驗、例行動作、每週提案 | — |
-| [lively_billing](https://github.com/GUCine/astrbot_plugin_lively_billing) DeepSeek 用量帳本 | 每小時記 DeepSeek 餘額，算每天真實花費，餘額不足提醒 | DeepSeek |
-| [lively_panel](https://github.com/GUCine/astrbot_plugin_lively_panel) 網頁控制面板 | 網頁面板：狀態、關係圖、卡冊、開關、待審核、飯錢、日誌 | — |
+| [Porta（lively_gate）](https://github.com/GUCine/astrbot_plugin_lively_gate) 群組門禁與共用設定 | 只放行指定的群；群聊、私聊分別用不同模型；句子裡喊名字當作 @；識別表情包；攔截洩漏的內部標記。**也是整套的公共設定** | — |
+| [Vinculum（lively_bond）](https://github.com/GUCine/astrbot_plugin_lively_bond) 好感度與印象卡 | 熟悉度、好感、心情、印象、每週人物卡；群友要「印象卡」時發一張卡片圖 | 可選 LivingMemory |
+| [Sedimentum（lively_memtier）](https://github.com/GUCine/astrbot_plugin_lively_memtier) 記憶分層壓縮 | 把 LivingMemory 的零碎記憶按日、周、月、季逐級壓縮，省 token | LivingMemory |
+| [Visitatio（lively_proactive）](https://github.com/GUCine/astrbot_plugin_lively_proactive) 主動私聊 | 偶爾主動私聊有過交互、好感夠的熟人 | bond |
+| [Vesper（lively_report）](https://github.com/GUCine/astrbot_plugin_lively_report) 每日彙報 | 每晚私信主人彙報今天的情況 | — |
+| [Icona（lively_comic）](https://github.com/GUCine/astrbot_plugin_lively_comic) 每日群聊漫畫 | 每天把群聊畫成漫畫，主人審核後發群；主人可以讓它畫畫 | 群分析總結插件 |
+| [Proverbia（lively_qzone）](https://github.com/GUCine/astrbot_plugin_lively_qzone) QQ 空間說說 | 寫說說，主人審核後發佈 | NapCat |
+| [Susceptio（lively_social）](https://github.com/GUCine/astrbot_plugin_lively_social) 好友與群邀請管家 | 好友申請、群邀請、禁言踢出通知 | — |
+| [Cantus（lively_voice）](https://github.com/GUCine/astrbot_plugin_lively_voice) 語音 | 她想說的時候用自己的聲音發 QQ 語音 | BreezeBlue |
+| [Evolutio（lively_evolve）](https://github.com/GUCine/astrbot_plugin_lively_evolve) 自我成長 | 按大家的反應微調參數、總結經驗、例行動作、每週提案 | — |
+| [Oblatio（lively_billing）](https://github.com/GUCine/astrbot_plugin_lively_billing) DeepSeek 用量帳本 | 每小時記 DeepSeek 餘額，算每天真實花費，餘額不足提醒 | DeepSeek |
+| [Sanctum（lively_panel）](https://github.com/GUCine/astrbot_plugin_lively_panel) 網頁控制面板 | 網頁面板：狀態、關係圖、卡冊、開關、待審核、飯錢、日誌 | — |
 
 每個插件都可以單獨裝，但 **astrbot_plugin_lively_gate 建議必裝**：其他插件的主人、群、機器人名字、人設用詞這些共用設定，沒單獨填時都從它那裡取。
 
